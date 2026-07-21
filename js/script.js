@@ -1,4 +1,4 @@
-﻿const contactForm = document.getElementById('contactForm');
+const contactForm = document.getElementById('contactForm');
 
 contactForm?.addEventListener('submit', async function (event) {
     event.preventDefault(); // Impede o envio padrão do formulário
@@ -138,8 +138,11 @@ async function carregarProjetos() {
         });
         if (!resposta.ok) throw new Error('Falha ao consultar o GitHub');
 
+        const repositoriosIgnorados = [usuario, 'HenriqueP', 'PortfolioHenrique'];
+        const nomesIgnorados = repositoriosIgnorados.map(nome => nome.toLowerCase());
+
         const repositorios = (await resposta.json())
-            .filter(repo => !repo.fork && repo.name.toLowerCase() !== usuario.toLowerCase())
+            .filter(repo => !repo.fork && !nomesIgnorados.includes(repo.name.toLowerCase()))
             .slice(0, 5);
 
         const cards = repositorios.map(repo => {
